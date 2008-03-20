@@ -1,0 +1,11 @@
+================================
+collective.workflowsheet - To Do
+================================
+
+ o Write importer
+ 
+ o Write sanity checker
+ 
+ o Improve tests
+ 
+ o Integration test with actual Plone site

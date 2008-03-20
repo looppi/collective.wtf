@@ -95,7 +95,7 @@ Description:,"Waiting to be reviewed, not editable by the owner."
 Transitions,"hide, publish, reject, retract"
 Worklist:,"Reviewer tasks
 "
-Worklist label:,Pending (%(count)d)
+Worklist label:,Pending (%%(count)d)
 Worklist guard permission:,Review portal content
 Worklist guard role:,
 Worklist guard expression:,
@@ -209,7 +209,6 @@ Script after:,
 Guard permission:,Request review
 Guard role:,
 Guard expression:,
-
 """
 
         body = handler.body

@@ -13,6 +13,12 @@ from Products.DCWorkflow.exportimport import WorkflowDefinitionConfigurator
 
 from zope.component import adapts
 
+# These roles are always included, in this order
+KNOWN_ROLES = ['Anonymous', 'Manager', 'Owner', 'Reader', 'Editor', 'Contributor']
+
+# These permissions are included if they are managed, in this order
+KNOWN_PERMISSIONS = ['Access contents information', 'View', 'Modify portal content']
+
 class DCWorkflowDefinitionBodyAdapter(BodyAdapterBase):
 
     """Body im- and exporter for DCWorkflowDefinition.
@@ -30,11 +36,13 @@ class DCWorkflowDefinitionBodyAdapter(BodyAdapterBase):
         # CMF folks, we love you
         i = wfdc.getWorkflowInfo(self.context.getId())
         
-        all_roles = set()
+        custom_roles = set()
         for s in i['state_info']:
             for p in s['permissions']:
-                all_roles.update(p['roles'])
-        all_roles = sorted(all_roles)
+                for r in p['roles']:
+                    if r not in KNOWN_ROLES:
+                        custom_roles.add(r)
+        all_roles = KNOWN_ROLES + sorted(custom_roles)
         
         state_worklists = {}
         for w in i['worklist_info']:
@@ -70,7 +78,12 @@ class DCWorkflowDefinitionBodyAdapter(BodyAdapterBase):
                 r(['Worklist guard expression:', w['guard_expr']                   ])
             
             r(['Permissions', 'Acquire'] + all_roles)
-            for p in s['permissions']:
+            
+            permission_map = dict([p['name'], p] for p in s['permissions'])
+            ordered_permissions = [permission_map[p] for p in KNOWN_PERMISSIONS if p in permission_map] + \
+                                  [p for p in s['permissions'] if p['name'] not in KNOWN_PERMISSIONS]
+
+            for p in ordered_permissions:
                 acquired = 'N'
                 if p['acquired']:
                     acquired = 'Y'
@@ -124,8 +137,20 @@ def importCSVWorkflow(context):
         return None
     
     for wf in portal_workflow.objectValues():
-        importer = queryMultiAdapter((wf, context), IBody, name=u'collective.workflowsheet')
+        
         filename = os.path.join("workflow_csv", "/%s.csv" % wf.getId())
+        xml_filename = os.path.join("workflows", wf.getId(), "definition.xml")
+        
+        if not os.path.exists(filename):
+            continue
+        
+        if os.path.exists(xml_filename):
+            logger = context.getLogger('workflow-csv')
+            logger.warn('Skipping CSV workflow definition in %s since %s exists' % (filename, xml_filename))
+            continue
+        
+        importer = queryMultiAdapter((wf, context), IBody, name=u'collective.workflowsheet')
+        
         body = context.readDataFile(filename)
         if body is not None:
             importer.filename = filename # for error reporting
