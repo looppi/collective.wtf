@@ -1,0 +1,128 @@
+[Workflow]
+Id:,plone_workflow
+Title:,Community Workflow
+Description:,"- Users can create content that is immediately publicly accessible. - Content can be submitted for publication by the content's creator or a Manager, which is typically done to promote events or news to the front page. - Reviewers can publish or reject content, content owners can retract their submissions. - While the content is awaiting review it is readable by anybody. - If content is published, it can only be retracted by a Manager."
+Initial state:,visible
+
+[State]
+Id:,pending
+Title:,Pending review
+Description:,"Waiting to be reviewed, not editable by the owner."
+Transitions,"hide, publish, reject, retract"
+Worklist:,"Reviewer tasks
+"
+Worklist label:,Pending (%(count)d)
+Worklist guard permission:,Review portal content
+Worklist guard role:,
+Worklist guard expression:,
+Permissions,Acquire,Anonymous,Contributor,Editor,Manager,Owner,Reader,Reviewer
+Access contents information,N,Y,N,N,N,N,N,N
+Change portal events,N,N,N,N,Y,N,N,Y
+Modify portal content,N,N,N,N,Y,N,N,Y
+View,N,Y,N,N,N,N,N,N
+
+[State]
+Id:,private
+Title:,Private
+Description:,Can only be seen and edited by the owner.
+Transitions,show
+Permissions,Acquire,Anonymous,Contributor,Editor,Manager,Owner,Reader,Reviewer
+Access contents information,N,N,Y,Y,Y,Y,Y,N
+Change portal events,N,N,N,Y,Y,Y,N,N
+Modify portal content,N,N,N,Y,Y,Y,N,N
+View,N,N,Y,Y,Y,Y,Y,N
+
+[State]
+Id:,published
+Title:,Published
+Description:,"Visible to everyone, not editable by the owner."
+Transitions,"reject, retract"
+Permissions,Acquire,Anonymous,Contributor,Editor,Manager,Owner,Reader,Reviewer
+Access contents information,N,Y,N,N,N,N,N,N
+Change portal events,N,N,N,N,Y,N,N,N
+Modify portal content,N,N,N,N,Y,N,N,N
+View,N,Y,N,N,N,N,N,N
+
+[State]
+Id:,visible
+Title:,Public draft
+Description:,"Visible to everyone, but not approved by the reviewers."
+Transitions,"hide, publish, submit"
+Permissions,Acquire,Anonymous,Contributor,Editor,Manager,Owner,Reader,Reviewer
+Access contents information,N,Y,N,N,N,N,N,N
+Change portal events,N,N,N,Y,Y,Y,N,N
+Modify portal content,N,N,N,Y,Y,Y,N,N
+View,N,Y,N,N,N,N,N,N
+
+[Transition]
+Id:,hide
+Target state:,private
+Title:,Make private
+Description:,Making an item private means that it will not be visible to anyone but the owner and the site administrator.
+Trigger:,User
+Script before:,
+Script after:,
+Guard permission:,Modify portal content
+Guard role:,
+Guard expression:,
+
+[Transition]
+Id:,publish
+Target state:,published
+Title:,Publish
+Description:,Publishing the item makes it visible to other users.
+Trigger:,User
+Script before:,
+Script after:,
+Guard permission:,Review portal content
+Guard role:,
+Guard expression:,
+
+[Transition]
+Id:,reject
+Target state:,visible
+Title:,Send back
+Description:,Sending the item back will return the item to the original author instead of publishing it. You should preferably include a reason for why it was not published.
+Trigger:,User
+Script before:,
+Script after:,
+Guard permission:,Review portal content
+Guard role:,
+Guard expression:,
+
+[Transition]
+Id:,retract
+Target state:,visible
+Title:,Retract
+Description:,"If you submitted the item by mistake or want to perform additional edits, this will take it back."
+Trigger:,User
+Script before:,
+Script after:,
+Guard permission:,Request review
+Guard role:,
+Guard expression:,
+
+[Transition]
+Id:,show
+Target state:,visible
+Title:,Promote to Draft
+Description:,Promotes your private item to a public draft.
+Trigger:,User
+Script before:,
+Script after:,
+Guard permission:,Modify portal content
+Guard role:,
+Guard expression:,
+
+[Transition]
+Id:,submit
+Target state:,pending
+Title:,Submit for publication
+Description:,"Puts your item in a review queue, so it can be published on the site."
+Trigger:,User
+Script before:,
+Script after:,
+Guard permission:,Request review
+Guard role:,
+Guard expression:,
+

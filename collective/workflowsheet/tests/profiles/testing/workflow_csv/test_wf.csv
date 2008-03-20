@@ -1,0 +1,65 @@
+[Workflow]
+Id:,test_workflow
+Title:,Test workflow
+Description:,Description of workflow
+Initial state:,state_one
+
+[State]
+Id:,state_one
+Title:,State one
+Description:,Description of state one
+Transitions:,to_state_two,to_state_three
+Worklist:,State one worklist
+Worklist title:Worklist stuff goes here
+Worklist guard permission:Review portal content
+Worklist guard expression:python:True==True
+Workflist guard role:Manager
+Permissions,                  Acquire,  Manager, Member, Owner
+View,                         Y,        Y,       N,      Y
+Access contents information,  Y,        Y,       N,      Y
+Modify portal content,        N,        Y,       N,      N
+
+[State]
+Id:,state_two
+Title:,State two
+Description:,Description of state two
+Transitions:,to_state_three
+Permissions,                  Acquire,  Manager, Member, Owner
+View,                         Y,        Y,       N,      Y
+Access contents information,  Y,        Y,       N,      Y
+Modify portal content,        N,        Y,       N,      N
+
+[State]
+Id:,state_three
+Title:,State three
+Description:,Description of state three
+Transitions:,to_state_one
+Permissions,                  Acquire,  Manager, Member, Owner
+View,                         N,        Y,       N,      Y
+Access contents information,  N,        Y,       N,      Y
+Modify portal content,        N,        N,       N,      N
+
+[Transition]
+Id:,to_state_one
+Target state:,state_one
+Title:,Make it state one
+Trigger:,User
+Script before:,before-script
+Script after:,after-script
+Description:,Make it go to state one
+Guard permission:,Modify portal content,View
+Guard expression:,python:True==True
+Guard role:Manager
+
+[Transition]
+Id:,to_state_two
+Target state:,state_two
+Title:,Make it state two
+Description:,Make it go to state one
+Guard permission:,Modify portal content,View
+
+[Transition]
+Id:,to_state_three
+Target state:,state_three
+Title:,Make it state three
+Description:,Make it go to state one

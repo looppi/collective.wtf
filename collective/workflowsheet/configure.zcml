@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="collective.workflowsheet">
+    
+    <adapter
+        factory=".exportimport.DCWorkflowDefinitionBodyAdapter"
+        name="collective.workflowsheet"
+        />
+    
+    <!-- Register import and export steps -->
+    <genericsetup:importStep
+        name="workflow-csv"
+        title="Workflow definitions (CSV)"
+        description="Workflow definitions in CSV format"
+        handler=".exportimport.importCSVWorkflow">
+        <depends name="workflow"/>
+    </genericsetup:importStep>
+
+    <genericsetup:exportStep
+        name="workflow-csv"
+        title="Workflow definitions (CSV)"
+        description="Workflow definitions in CSV format"
+        handler=".exportimport.exportCSVWorkflow"
+        />
+
+</configure>

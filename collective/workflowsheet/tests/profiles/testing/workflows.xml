@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<object name="portal_workflow">
+ <object name="test_wf" meta_type="Workflow"/>
+</object>
