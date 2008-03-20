@@ -10,18 +10,15 @@ from Products.GenericSetup.utils import BodyAdapterBase
 
 from Products.DCWorkflow.interfaces import IDCWorkflowDefinition
 from Products.DCWorkflow.exportimport import WorkflowDefinitionConfigurator
+from Products.DCWorkflow.exportimport import _initDCWorkflow
 
 from zope.component import adapts
 
-# These roles are always included, in this order
-KNOWN_ROLES = ['Anonymous', 'Manager', 'Owner', 'Reader', 'Editor', 'Contributor']
+from collective.workflowsheet import config
 
-# These permissions are included if they are managed, in this order
-KNOWN_PERMISSIONS = ['Access contents information', 'View', 'Modify portal content']
 
 class DCWorkflowDefinitionBodyAdapter(BodyAdapterBase):
-
-    """Body im- and exporter for DCWorkflowDefinition.
+    """Body im- and exporter for DCWorkflowDefinition in CSV format.
     """
 
     adapts(IDCWorkflowDefinition, ISetupEnviron)
@@ -40,9 +37,9 @@ class DCWorkflowDefinitionBodyAdapter(BodyAdapterBase):
         for s in i['state_info']:
             for p in s['permissions']:
                 for r in p['roles']:
-                    if r not in KNOWN_ROLES:
+                    if r not in config.KNOWN_ROLES:
                         custom_roles.add(r)
-        all_roles = KNOWN_ROLES + sorted(custom_roles)
+        all_roles = config.KNOWN_ROLES + sorted(custom_roles)
         
         state_worklists = {}
         for w in i['worklist_info']:
@@ -80,8 +77,8 @@ class DCWorkflowDefinitionBodyAdapter(BodyAdapterBase):
             r(['Permissions', 'Acquire'] + all_roles)
             
             permission_map = dict([p['name'], p] for p in s['permissions'])
-            ordered_permissions = [permission_map[p] for p in KNOWN_PERMISSIONS if p in permission_map] + \
-                                  [p for p in s['permissions'] if p['name'] not in KNOWN_PERMISSIONS]
+            ordered_permissions = [permission_map[p] for p in config.KNOWN_PERMISSIONS if p in permission_map] + \
+                                  [p for p in s['permissions'] if p['name'] not in config.KNOWN_PERMISSIONS]
 
             for p in ordered_permissions:
                 acquired = 'N'
@@ -122,7 +119,14 @@ class DCWorkflowDefinitionBodyAdapter(BodyAdapterBase):
         """Import the object from the file body.
         """
         
-        pass
+        i = config.INFO_TEMPLATE.copy()
+        
+        _initDCWorkflow(self.context, 
+                        i['title'],          i['description'],     i['state_variable'], 
+                        i['initial_state'],  i['state_info'],      i['transition_info'], 
+                        i['variable_info'],  i['worklist_info'],   i['permissions'], 
+                        i['script_info'],
+                        self.environ)
 
     body = property(_exportBody, _importBody)
 
