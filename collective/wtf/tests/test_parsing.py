@@ -44,14 +44,42 @@ class TestDeserializer(unittest.TestCase):
     
     def test_deserialize_complex(self):
         
-        expected = plone_workflow_info.copy()
         deserializer = DefaultDeserializer()
         
         input_stream = StringIO(plone_workflow_csv)
-        actual = deserializer(input_stream)
+        info = deserializer(input_stream)
         
-        self.assertEquals(expected, actual, actual)
-            
+        # Basic info
+        self.assertEquals('plone_workflow', info['id'])
+        self.assertEquals('Community Workflow', info['title'])
+        self.assertEquals('visible', info['initial_state'])
+        
+        # List of states
+        self.assertEquals(sorted(['pending', 'private', 'published', 'visible' ]),
+                          sorted([s['id'] for s in info['state_info']]))
+                          
+        # Permissions of a state
+        pending_state_permissions = [s['permissions'] for s in info['state_info'] if s['id'] == 'pending'][0]
+        pending_state_permissions = dict([(p['name'], p) for p in pending_state_permissions])
+        
+        self.assertEquals(False, pending_state_permissions['View']['acquired'])
+        self.assertEquals(sorted(('Anonymous',)), sorted(pending_state_permissions['View']['roles']))
+        
+        self.assertEquals(False, pending_state_permissions['Modify portal content']['acquired'])
+        self.assertEquals(sorted(('Manager', 'Reviewer')), sorted(pending_state_permissions['Modify portal content']['roles']))
+        
+        # List of permissions (extracted as union of all managed permissions)
+        self.assertEquals(sorted(['Access contents information', 'Change portal events', 'Modify portal content', 'View']),
+                          sorted(info['permissions']))
+                          
+        # List of transitions
+        self.assertEquals(sorted(['hide', 'publish', 'reject', 'retract', 'submit', 'show']),
+                          sorted([s['id'] for s in info['transition_info']]))
+                          
+        # List of worklists
+        self.assertEquals(sorted(['reviewer-tasks']),
+                          sorted([s['id'] for s in info['worklist_info']]))
+        
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
