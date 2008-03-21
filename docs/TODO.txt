@@ -4,8 +4,6 @@ collective.wtf - to-do
 
  o Write sanity checker
  
- o Fix and improve tests tests
- 
- o Clean up documentation/examples
- 
  o Clean up logging
+ 
+ o Improve test coverage for exception/graceful recovery cases
