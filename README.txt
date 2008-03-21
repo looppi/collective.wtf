@@ -1,5 +1,5 @@
 ========================
-collective.workflowsheet
+collective.wtf
 ========================
 
  by Martin Aspeli <optilude@gmail.com>

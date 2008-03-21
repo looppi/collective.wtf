@@ -3,7 +3,7 @@ import os
 
 version = '1.0a1'
 
-setup(name='collective.workflowsheet',
+setup(name='collective.wtf',
       version=version,
       description="GenericSetup importer and exporter for workflow definitions that uses CSV instead of XML",
       long_description=open("README.txt").read() + "\n" +

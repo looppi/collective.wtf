@@ -14,7 +14,7 @@ from Products.DCWorkflow.exportimport import _initDCWorkflow
 
 from zope.component import adapts
 
-from collective.workflowsheet import config
+from collective.wtf import config
 
 
 class DCWorkflowDefinitionBodyAdapter(BodyAdapterBase):
@@ -153,7 +153,7 @@ def importCSVWorkflow(context):
             logger.warn('Skipping CSV workflow definition in %s since %s exists' % (filename, xml_filename))
             continue
         
-        importer = queryMultiAdapter((wf, context), IBody, name=u'collective.workflowsheet')
+        importer = queryMultiAdapter((wf, context), IBody, name=u'collective.wtf')
         
         body = context.readDataFile(filename)
         if body is not None:
@@ -170,7 +170,7 @@ def exportCSVWorkflow(context):
         return None
     
     for wf in portal_workflow.objectValues():
-        exporter = queryMultiAdapter((wf, context), IBody, name=u'collective.workflowsheet')
+        exporter = queryMultiAdapter((wf, context), IBody, name=u'collective.wtf')
         
         if not os.path.exists('workflow_csv'):
             os.mkdir('workflow_csv')

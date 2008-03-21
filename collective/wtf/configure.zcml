@@ -2,11 +2,11 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-    i18n_domain="collective.workflowsheet">
+    i18n_domain="collective.wtf">
     
     <adapter
         factory=".exportimport.DCWorkflowDefinitionBodyAdapter"
-        name="collective.workflowsheet"
+        name="collective.wtf"
         />
     
     <!-- Register import and export steps -->

@@ -1,5 +1,6 @@
 import time
 import transaction
+import difflib
 
 from zope.component import getMultiAdapter
 
@@ -23,11 +24,11 @@ zcml_string = """\
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:plone="http://namespaces.plone.org/plone"
            xmlns:gs="http://namespaces.zope.org/genericsetup"
-           package="collective.workflowsheet">
+           package="collective.wtf">
 
     <gs:registerProfile
         name="testing"
-        title="collective.workflowsheet testing"
+        title="collective.wtf testing"
         description="Used for testing only" 
         directory="tests/profiles/testing"
         for="Products.CMFCore.interfaces.ISiteRoot"
@@ -43,8 +44,8 @@ class ZCMLLayer(PloneSite):
     def setUp(cls):
         fiveconfigure.debug_mode = True
         zcml.load_string(zcml_string)
-        import collective.workflowsheet
-        zcml.load_config('configure.zcml', collective.workflowsheet)
+        import collective.wtf
+        zcml.load_config('configure.zcml', collective.wtf)
         fiveconfigure.debug_mode = False
 
     @classmethod
@@ -61,7 +62,7 @@ class GSLayer(ZCMLLayer):
         portal_setup = portal.portal_setup
         # wait a bit or we get duplicate ids on import
         time.sleep(1)
-        portal_setup.runAllImportStepsFromProfile('profile-collective.workflowsheet:testing')
+        portal_setup.runAllImportStepsFromProfile('profile-collective.wtf:testing')
         
         transaction.commit()
         ZopeTestCase.close(app)
@@ -79,7 +80,7 @@ class TestGenericSetup(PloneTestCase):
     def test_export(self):
         wf = self.portal.portal_workflow.plone_workflow
         context = TarballExportContext(self.portal.portal_setup)
-        handler = getMultiAdapter((wf, context), IBody, name=u'collective.workflowsheet')
+        handler = getMultiAdapter((wf, context), IBody, name=u'collective.wtf')
         
         expected = """\
 [Workflow]
@@ -95,48 +96,48 @@ Description:,"Waiting to be reviewed, not editable by the owner."
 Transitions,"hide, publish, reject, retract"
 Worklist:,"Reviewer tasks
 "
-Worklist label:,Pending (%%(count)d)
+Worklist label:,Pending (%(count)d)
 Worklist guard permission:,Review portal content
 Worklist guard role:,
 Worklist guard expression:,
-Permissions,Acquire,Anonymous,Contributor,Editor,Manager,Owner,Reader,Reviewer
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
 Access contents information,N,Y,N,N,N,N,N,N
-Change portal events,N,N,N,N,Y,N,N,Y
-Modify portal content,N,N,N,N,Y,N,N,Y
 View,N,Y,N,N,N,N,N,N
+Modify portal content,N,N,Y,N,N,N,N,Y
+Change portal events,N,N,Y,N,N,N,N,Y
 
 [State]
 Id:,private
 Title:,Private
 Description:,Can only be seen and edited by the owner.
 Transitions,show
-Permissions,Acquire,Anonymous,Contributor,Editor,Manager,Owner,Reader,Reviewer
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
 Access contents information,N,N,Y,Y,Y,Y,Y,N
-Change portal events,N,N,N,Y,Y,Y,N,N
-Modify portal content,N,N,N,Y,Y,Y,N,N
 View,N,N,Y,Y,Y,Y,Y,N
+Modify portal content,N,N,Y,Y,N,Y,N,N
+Change portal events,N,N,Y,Y,N,Y,N,N
 
 [State]
 Id:,published
 Title:,Published
 Description:,"Visible to everyone, not editable by the owner."
 Transitions,"reject, retract"
-Permissions,Acquire,Anonymous,Contributor,Editor,Manager,Owner,Reader,Reviewer
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
 Access contents information,N,Y,N,N,N,N,N,N
-Change portal events,N,N,N,N,Y,N,N,N
-Modify portal content,N,N,N,N,Y,N,N,N
 View,N,Y,N,N,N,N,N,N
+Modify portal content,N,N,Y,N,N,N,N,N
+Change portal events,N,N,Y,N,N,N,N,N
 
 [State]
 Id:,visible
 Title:,Public draft
 Description:,"Visible to everyone, but not approved by the reviewers."
 Transitions,"hide, publish, submit"
-Permissions,Acquire,Anonymous,Contributor,Editor,Manager,Owner,Reader,Reviewer
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
 Access contents information,N,Y,N,N,N,N,N,N
-Change portal events,N,N,N,Y,Y,Y,N,N
-Modify portal content,N,N,N,Y,Y,Y,N,N
 View,N,Y,N,N,N,N,N,N
+Modify portal content,N,N,Y,Y,N,Y,N,N
+Change portal events,N,N,Y,Y,N,Y,N,N
 
 [Transition]
 Id:,hide
@@ -212,7 +213,10 @@ Guard expression:,
 """
 
         body = handler.body
-        self.assertEquals(expected.strip(), body.strip(), body)
+        
+        diff = '\n'.join(list(difflib.unified_diff(body.strip().splitlines(), expected.strip().splitlines())))
+                                         
+        self.failIf(diff, diff)
         
 def test_suite():
     from unittest import TestSuite, makeSuite

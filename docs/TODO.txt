@@ -1,5 +1,5 @@
 ================================
-collective.workflowsheet - To Do
+collective.wtf - To Do
 ================================
 
  o Write importer
