@@ -1,11 +1,11 @@
-================================
-collective.wtf - To Do
-================================
+======================
+collective.wtf - to-do
+======================
 
- o Write importer
- 
  o Write sanity checker
  
- o Improve tests
+ o Fix and improve tests tests
  
- o Integration test with actual Plone site
+ o Clean up documentation/examples
+ 
+ o Clean up logging

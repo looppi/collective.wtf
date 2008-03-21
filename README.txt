@@ -1,6 +1,6 @@
-========================
+===============
 collective.wtf
-========================
+===============
 
  by Martin Aspeli <optilude@gmail.com>
  

@@ -4,6 +4,13 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="collective.wtf">
     
+    <!-- Configuration and services -->
+    
+    <utility factory=".config.DefaultConfig" />
+    <utility factory=".serializer.DefaultSerializer" />
+    <utility factory=".deserializer.DefaultDeserializer" />
+    
+    <!-- Register the body export adapter -->
     <adapter
         factory=".exportimport.DCWorkflowDefinitionBodyAdapter"
         name="collective.wtf"
@@ -24,5 +31,5 @@
         description="Workflow definitions in CSV format"
         handler=".exportimport.exportCSVWorkflow"
         />
-
+        
 </configure>

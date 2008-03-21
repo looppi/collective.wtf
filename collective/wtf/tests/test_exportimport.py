@@ -77,6 +77,9 @@ class TestGenericSetup(PloneTestCase):
     
     layer = GSLayer
     
+    def test_import(self):
+        pass
+    
     def test_export(self):
         wf = self.portal.portal_workflow.plone_workflow
         context = TarballExportContext(self.portal.portal_setup)
@@ -94,8 +97,7 @@ Id:,pending
 Title:,Pending review
 Description:,"Waiting to be reviewed, not editable by the owner."
 Transitions,"hide, publish, reject, retract"
-Worklist:,"Reviewer tasks
-"
+Worklist:,Reviewer tasks
 Worklist label:,Pending (%(count)d)
 Worklist guard permission:,Review portal content
 Worklist guard role:,
@@ -145,8 +147,6 @@ Target state:,private
 Title:,Make private
 Description:,Making an item private means that it will not be visible to anyone but the owner and the site administrator.
 Trigger:,User
-Script before:,
-Script after:,
 Guard permission:,Modify portal content
 Guard role:,
 Guard expression:,
@@ -157,8 +157,6 @@ Target state:,published
 Title:,Publish
 Description:,Publishing the item makes it visible to other users.
 Trigger:,User
-Script before:,
-Script after:,
 Guard permission:,Review portal content
 Guard role:,
 Guard expression:,
@@ -169,8 +167,6 @@ Target state:,visible
 Title:,Send back
 Description:,Sending the item back will return the item to the original author instead of publishing it. You should preferably include a reason for why it was not published.
 Trigger:,User
-Script before:,
-Script after:,
 Guard permission:,Review portal content
 Guard role:,
 Guard expression:,
@@ -181,8 +177,6 @@ Target state:,visible
 Title:,Retract
 Description:,"If you submitted the item by mistake or want to perform additional edits, this will take it back."
 Trigger:,User
-Script before:,
-Script after:,
 Guard permission:,Request review
 Guard role:,
 Guard expression:,
@@ -193,8 +187,6 @@ Target state:,visible
 Title:,Promote to Draft
 Description:,Promotes your private item to a public draft.
 Trigger:,User
-Script before:,
-Script after:,
 Guard permission:,Modify portal content
 Guard role:,
 Guard expression:,
@@ -205,8 +197,6 @@ Target state:,pending
 Title:,Submit for publication
 Description:,"Puts your item in a review queue, so it can be published on the site."
 Trigger:,User
-Script before:,
-Script after:,
 Guard permission:,Request review
 Guard role:,
 Guard expression:,

@@ -10,10 +10,10 @@ Title:,State one
 Description:,Description of state one
 Transitions:,to_state_two,to_state_three
 Worklist:,State one worklist
-Worklist title:Worklist stuff goes here
-Worklist guard permission:Review portal content
-Worklist guard expression:python:True==True
-Workflist guard role:Manager
+Worklist label:,Worklist stuff goes here
+Worklist guard permission:,Review portal content
+Worklist guard expression:,python:True==True
+Worklist guard role:,Manager
 Permissions,                  Acquire,  Manager, Member, Owner
 View,                         Y,        Y,       N,      Y
 Access contents information,  Y,        Y,       N,      Y
@@ -44,12 +44,10 @@ Id:,to_state_one
 Target state:,state_one
 Title:,Make it state one
 Trigger:,User
-Script before:,before-script
-Script after:,after-script
 Description:,Make it go to state one
 Guard permission:,Modify portal content,View
 Guard expression:,python:True==True
-Guard role:Manager
+Guard role:,Manager
 
 [Transition]
 Id:,to_state_two
