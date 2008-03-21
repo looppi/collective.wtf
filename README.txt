@@ -20,10 +20,15 @@ require the full power of DCWorkflow, you should continue to use the XML
 based format. This is not (just) due to laziness - the CSV format has been 
 simplified to make common operations easy.
 
-For an example CSV file, see docs/sample-output.csv. A file like this would
-normally go in profiles/default/workflow_csv/wf_name.csv where wf_name is the
-name of the workflow in portal_workfklow. Note that you still need at least a
-workflows.xml to initialise the workflow definition.
+For an example CSV file, see
+ 
+    collective/wtf/tests/profiles/testing/test_wf.csv.
+    
+A file like this would normally go in
+
+    profiles/default/workflow_csv/wf_name.csv 
+    
+where wf_name is the name of the workflow in portal_workflow. Note that you still need at least a workflows.xml to initialise the workflow definition.
 
 Also note that if a full workflow definition does exist (e.g. in 
 profiles/default/workflows/my_workflow/definition.xml), the CSV importer will
