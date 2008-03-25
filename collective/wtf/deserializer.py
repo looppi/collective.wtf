@@ -33,6 +33,7 @@ class DefaultDeserializer(object):
         
         self.dispatch(config, info, reader)
         self.backfill(info)
+        self.validate(info)
     
         return info
 
@@ -186,6 +187,15 @@ class DefaultDeserializer(object):
 
         info['permissions'] = sorted(all_permissions)
         
+    def validate(self, info):
+        """Perform overall validation on the workflow
+        """
+        
+        state_ids = set([s['id'] for s in info['state_info']])
+        if info['initial_state'] not in state_ids:
+            raise ParsingError("The initial state id is set to %s, but this is not found in the workflow" % info['initial_state'])
+            
+        
         
     # helper methods
         
@@ -219,8 +229,10 @@ class DefaultDeserializer(object):
                 continue
             
             key = self.normalize(line[0])
+            value = line[1].strip()
             
-            values[key] = line[1].strip()
+            if value:
+                values[key] = line[1].strip()
             
             if stop and key == stop:
                 values[key] = line
