@@ -42,7 +42,7 @@ class DefaultDeserializer(object):
         """Dispatch to an appropriate section handler
         """
         
-        checklist = set(['workflow', 'state', 'transition'])
+        checklist = set(['workflow', 'state',])
         found = set()
         
         for line in reader:
