@@ -14,12 +14,15 @@ from Products.GenericSetup.utils import BodyAdapterBase
 from Products.DCWorkflow.interfaces import IDCWorkflowDefinition
 from Products.DCWorkflow.exportimport import WorkflowDefinitionConfigurator
 from Products.DCWorkflow.exportimport import _initDCWorkflow
+from Products.DCWorkflow.DCWorkflow import DCWorkflowDefinition
 
 from zope.component import adapts
 
 from collective.wtf.interfaces import ParsingError
 from collective.wtf.interfaces import ICSVWorkflowSerializer
 from collective.wtf.interfaces import ICSVWorkflowDeserializer 
+
+import Products
 
 class CSVWorkflowDefinitionConfigurator(WorkflowDefinitionConfigurator):
     """Cheat by borrowing a lot of logic from the DCWorkflow handler
@@ -144,20 +147,27 @@ def importCSVWorkflow(context):
     if not xml_dir:
         xml_dir = set()
 
-    parsed = set()
-    
-    for wf in portal_workflow.objectValues():
+    for csv_filename in csv_dir:
         
-        csv_filename = "%s.csv" % wf.getId()
-        xml_filename = "%s.xml" % wf.getId()
-        
-        if not csv_filename in csv_dir:
+        if not csv_filename.endswith('.csv'):
             continue
+        
+        wf_name = str(csv_filename[:-4]) # yes, this is evil
+        xml_filename = "%s.xml" % wf_name
         
         if xml_filename in xml_dir:
-            logger.warn('Skipping CSV workflow definition in %s since %s exists' % (csv_filename, xml_filename))
-            parsed.add(csv_filename)
+            logger.warn('Skipping CSV workflow definition in %s since %s exists.' % (csv_filename, xml_filename))
             continue
+        
+        wf = None
+        
+        if wf_name in portal_workflow.objectIds():
+            logger.info('Updating existing workflow definition %s.' % wf_name)
+            wf = portal_workflow[wf_name]
+        else:
+            logger.info('Creating workflow definition %s using standard workflows.' % wf_name)
+            portal_workflow._setObject(wf_name, DCWorkflowDefinition(wf_name))
+            wf = portal_workflow[wf_name]
         
         filename = os.path.join("workflow_csv", csv_filename)
         importer = queryMultiAdapter((wf, context), IBody, name=u'collective.wtf')
@@ -166,12 +176,6 @@ def importCSVWorkflow(context):
         if body is not None:
             importer.filename = filename # for error reporting
             importer.body = body
-            
-            parsed.add(csv_filename)
-            
-    skipped = csv_dir - parsed
-    if len(skipped) > 0:
-        logger.warn("The following CSV files were not imported: %s \nPerhaps you need to add a workflows.xml file to declare them?" % ', '.join(skipped))
 
 def exportCSVWorkflow(context):
     """Export portlet managers and portlets
