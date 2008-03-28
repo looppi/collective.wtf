@@ -1,6 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="collective.wtf">
     
@@ -30,6 +30,31 @@
         title="Workflow definitions (CSV)"
         description="Workflow definitions in CSV format"
         handler=".exportimport.exportCSVWorkflow"
+        />
+        
+    <!-- Sanity checker -->
+    
+    <subscriber provides=".interfaces.ISanityChecker" factory=".verify.StateVariable" />
+    <subscriber provides=".interfaces.ISanityChecker" factory=".verify.CorePermissions" />
+    <subscriber provides=".interfaces.ISanityChecker" factory=".verify.AnonymousPreference" />
+    <subscriber provides=".interfaces.ISanityChecker" factory=".verify.ViewVsAccess" />
+    <subscriber provides=".interfaces.ISanityChecker" factory=".verify.LocalRoleCorrelation" />
+    <subscriber provides=".interfaces.ISanityChecker" factory=".verify.WorkflowVariables" />
+    
+    <browser:page
+        name="sanity-check"
+        for="Products.DCWorkflow.interfaces.IDCWorkflowDefinition"
+        class=".browser.SanityCheck"
+        permission="zope2.View"
+        />
+        
+    <!-- Ad-hoc export -->
+    
+    <browser:page
+        name="to-csv"
+        for="Products.DCWorkflow.interfaces.IDCWorkflowDefinition"
+        class=".browser.ToCSV"
+        permission="zope2.View"
         />
         
 </configure>

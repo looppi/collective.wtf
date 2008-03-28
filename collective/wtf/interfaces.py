@@ -35,3 +35,12 @@ class ICSVWorkflowConfig(Interface):
     state_permission_template = Attribute("A template a permission dict inside info['state_info'][a_state]['permissions']")
     transition_template = Attribute("A template a transition dict inside info['transition_info']")
     worklist_template = Attribute("A template a worklist dict inside info['workflist_info']")
+    
+class ISanityChecker(Interface):
+    """Get a list of messages describing any problems with a particular
+    workflow. Adapts a workflow definition.
+    """
+    
+    def __call__():
+        """Return a list of messages.
+        """
