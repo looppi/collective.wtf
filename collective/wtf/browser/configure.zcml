@@ -1,0 +1,32 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="collective.wtf">
+
+    <!-- Arbitrary permission and role info -->
+    <browser:page
+        name="display-roles-in-context"
+        for="*"
+        class=".roleinfo.RoleInfo"
+        permission="cmf.ManagePortal"
+        />
+
+    <!-- Workflow sanity check -->
+    
+    <browser:page
+        name="sanity-check"
+        for="Products.DCWorkflow.interfaces.IDCWorkflowDefinition"
+        class=".sanitycheck.SanityCheck"
+        permission="zope2.View"
+        />
+        
+    <!-- Ad-hoc export -->
+    
+    <browser:page
+        name="to-csv"
+        for="Products.DCWorkflow.interfaces.IDCWorkflowDefinition"
+        class=".tocsv.ToCSV"
+        permission="zope2.View"
+        />
+        
+</configure>

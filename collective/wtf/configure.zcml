@@ -3,6 +3,9 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="collective.wtf">
+
+    <!-- Dependencies -->
+    <include package=".browser" />
     
     <!-- Configuration and services -->
     
@@ -40,21 +43,6 @@
     <subscriber provides=".interfaces.ISanityChecker" factory=".verify.ViewVsAccess" />
     <subscriber provides=".interfaces.ISanityChecker" factory=".verify.LocalRoleCorrelation" />
     <subscriber provides=".interfaces.ISanityChecker" factory=".verify.WorkflowVariables" />
-    
-    <browser:page
-        name="sanity-check"
-        for="Products.DCWorkflow.interfaces.IDCWorkflowDefinition"
-        class=".browser.SanityCheck"
-        permission="zope2.View"
-        />
-        
-    <!-- Ad-hoc export -->
-    
-    <browser:page
-        name="to-csv"
-        for="Products.DCWorkflow.interfaces.IDCWorkflowDefinition"
-        class=".browser.ToCSV"
-        permission="zope2.View"
-        />
+
         
 </configure>

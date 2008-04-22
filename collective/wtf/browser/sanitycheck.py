@@ -1,4 +1,3 @@
-from zope.component import getUtility
 from zope.component import subscribers
 
 from StringIO import StringIO
@@ -6,10 +5,7 @@ from Products.Five.browser import BrowserView
 
 from plone.memoize.instance import memoize
 
-from collective.wtf.interfaces import ICSVWorkflowSerializer
 from collective.wtf.interfaces import ISanityChecker
-
-from collective.wtf.exportimport import CSVWorkflowDefinitionConfigurator
 
 class SanityCheck(BrowserView):
     """Perform a number of checks on the context workflow definition
@@ -48,21 +44,3 @@ class SanityCheck(BrowserView):
             if new_messages:
                 messages += new_messages
         return messages
-        
-class ToCSV(BrowserView):
-    """Export the context workflow to CSV as a one-off
-    """
-    
-    def __call__(self):
-        
-        wfdc = CSVWorkflowDefinitionConfigurator(self.context)
-        info = wfdc.getWorkflowInfo(self.context.getId())
-        serializer = getUtility(ICSVWorkflowSerializer)
-        
-        output_stream = StringIO()
-        
-        serializer(info, output_stream) # allow parsing error to bubble
-
-        self.request.response.setHeader("Content-type","test/csv")
-        self.request.response.setHeader("Content-disposition","attachment;filename=%s.csv" % self.context.getId())    
-        return output_stream.getvalue()
