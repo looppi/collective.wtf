@@ -106,7 +106,7 @@ class DefaultDeserializer(object):
 
         # Populate permission/role mappings
         for line in reader:
-            if not line:
+            if not line or not ''.join(line): #  EOF or blank line:
                 break
 
             permission_info = copy.deepcopy(config.state_permission_template)
@@ -202,7 +202,7 @@ class DefaultDeserializer(object):
     def read_section(self, line):
         """Return a normalized section name
         """
-        if not line:
+        if not line or not ''.join(line): #  EOF or blank line:
             return None
             
         cell = line[0]
@@ -221,7 +221,7 @@ class DefaultDeserializer(object):
         
         for line in reader:
             
-            if not line:
+            if not line or not ''.join(line): #  EOF or blank line
                 break
 
             if len(line) < 2:
