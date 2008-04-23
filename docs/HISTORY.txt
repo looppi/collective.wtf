@@ -1,8 +1,9 @@
 Changelog
 =========
 
-1.0a1 - Unreleased
-----------------
+1.0b2
+-----
 
-* Initial release
+* Add the ability to display roles in any context via a simple browser view
+  [optilude]
 
