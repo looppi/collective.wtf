@@ -5,7 +5,8 @@ collective.wtf
  by Martin Aspeli <optilude@gmail.com>
  
 This package contains tools for working with DC Workflow definitions via
-spreadsheets (or rather, CSV format).
+spreadsheets (or rather, CSV format) as well as debugging aids to make it
+easier to work with security and workflow in Zope 2 and Plone.
 
 It consists of:
 
@@ -14,8 +15,12 @@ It consists of:
    file
  - An in-browser tool to sanity-check a workflow
  - A browser view to dump a workflow in the site to CSV as a one-off
+ - A browser view to show the roles of a user in a given context
  
-Note that the CSV format is not completely equivalent to the standard 
+CSV import/export
+-----------------
+
+Please note that the CSV format is not completely equivalent to the standard 
 XML-based GenericSetup format to import/export workflow definitions. If you
 require the full power of DCWorkflow, you should continue to use the XML
 based format. This is not (just) due to laziness - the CSV format has been 
@@ -44,10 +49,26 @@ this into your browser:
 Here, "Plone" is the name of the Plone instance and "my_workflow" is the name
 of your workflow definition. You will be asked to download a CSV file.
 
+Workflow sanity checker
+-----------------------
+
 To invoke the sanity checker, type a URL like this into your browser:
 
  http://localhost:8080/Plone/portal_workflow/my_workflow/@@sanity-check
  
-Again, "Plone" is the name of the PLone instance and "my_workflow" is the name
+Again, "Plone" is the name of the Plone instance and "my_workflow" is the name
 of the workflow definition. The output will be written to the browser window
 in plain text.
+
+Other debugging aids
+--------------------
+
+To view the current roles of a given user in a given context, type a URL like
+this into your browser when logged in as a Manager user:
+
+ http://localhost:8080/Plone/context/@@display-roles-in-context?user=<user>
+ 
+Again, "Plone" is the name of the Plone instance. "context" could be any 
+object. <user> should be replaced by the login name/id of the user you 
+want to fetch roles for. The output will be written to the browser window in
+plain text.
