@@ -141,7 +141,7 @@ class DefaultDeserializer(object):
             worklist['description']       = s_info['worklist'] 
             worklist['actbox_url']        = '%(portal_url)s/search?review_state=' + state['id']
             worklist['guard_roles']       = self.get_list(s_info.get('worklist-guard-role', s_info.get('worklist-guard-roles', '')))
-            worklist['guard_permisisons'] = self.get_list(s_info.get('worklist-guard-permission', s_info.get('worklist-guard-permissions', '')))
+            worklist['guard_permissions'] = self.get_list(s_info.get('worklist-guard-permission', s_info.get('worklist-guard-permissions', '')))
             worklist['guard_expr']        = s_info.get('worklist-guard-expression', '')
             worklist['var_match']         = [('review_state', state['id'])]
             
@@ -169,7 +169,7 @@ class DefaultDeserializer(object):
         transition['trigger_type']      = t_info.get('trigger', 'User').upper()
         transition['actbox_url']        = t_info.get('url', '') # since plone 3 this can be customised
         transition['guard_roles']       = self.get_list(t_info.get('guard-role', t_info.get('guard-roles', '')))
-        transition['guard_permisisons'] = self.get_list(t_info.get('guard-permission', t_info.get('guard-permissions', '')))
+        transition['guard_permissions'] = self.get_list(t_info.get('guard-permission', t_info.get('guard-permissions', '')))
         transition['guard_expr']        = t_info.get('guard-expression', '')
         transition['script_name']       = t_info.get('script-before', '')
         transition['after_script_name'] = t_info.get('script-after', '')
