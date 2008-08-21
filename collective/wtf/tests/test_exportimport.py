@@ -147,67 +147,85 @@ Change portal events,N,N,Y,Y,N,Y,N,N
 Id:,hide
 Target state:,private
 Title:,Make private
+URL:,%(content_url)s/content_status_modify?workflow_action=hide
 Description:,Member makes content private
 Details:,Making an item private means that it will not be visible to anyone but the owner and the site administrator.
 Trigger:,User
 Guard permission:,Modify portal content
 Guard role:,
 Guard expression:,
+Script before:,
+Script after:,
 
 [Transition]
 Id:,publish
 Target state:,published
 Title:,Publish
+URL:,%(content_url)s/content_status_modify?workflow_action=publish
 Description:,Reviewer publishes content
 Details:,Publishing the item makes it visible to other users.
 Trigger:,User
 Guard permission:,Review portal content
 Guard role:,
 Guard expression:,
+Script before:,
+Script after:,
 
 [Transition]
 Id:,reject
 Target state:,visible
 Title:,Send back
+URL:,%(content_url)s/content_status_modify?workflow_action=reject
 Description:,Reviewer sends content back for re-drafting
 Details:,Sending the item back will return the item to the original author instead of publishing it. You should preferably include a reason for why it was not published.
 Trigger:,User
 Guard permission:,Review portal content
 Guard role:,
 Guard expression:,
+Script before:,
+Script after:,
 
 [Transition]
 Id:,retract
 Target state:,visible
 Title:,Retract
+URL:,%(content_url)s/content_status_modify?workflow_action=retract
 Description:,Member retracts submission
 Details:,"If you submitted the item by mistake or want to perform additional edits, this will take it back."
 Trigger:,User
 Guard permission:,Request review
 Guard role:,
 Guard expression:,
+Script before:,
+Script after:,
 
 [Transition]
 Id:,show
 Target state:,visible
 Title:,Promote to Draft
+URL:,%(content_url)s/content_status_modify?workflow_action=show
 Description:,Member promotes content to public draft
 Details:,Promotes your private item to a public draft.
 Trigger:,User
 Guard permission:,Modify portal content
 Guard role:,
 Guard expression:,
+Script before:,
+Script after:,
 
 [Transition]
 Id:,submit
 Target state:,pending
 Title:,Submit for publication
+URL:,%(content_url)s/content_status_modify?workflow_action=submit
 Description:,Member submits content for publication
 Details:,"Puts your item in a review queue, so it can be published on the site."
 Trigger:,User
 Guard permission:,Request review
 Guard role:,
 Guard expression:,
+Script before:,
+Script after:,
 """
 
         body = handler.body
