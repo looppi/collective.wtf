@@ -154,16 +154,16 @@ class DefaultDeserializer(object):
         
         t_info = self.get_map(reader)
         
-        required = ['id', 'target-state', 'title']
+        required = ['id']
         missing = [m for m in required if m not in t_info]
         if missing:
-            raise ParsingError("Each [Transition] section must have an 'Id:', a 'Title:' and a 'Target state:' defined")
+            raise ParsingError("Each [Transition] section must have an 'Id:' defined")
         
         transition = copy.deepcopy(config.transition_template)
         
         transition['id']                = t_info['id']
-        transition['new_state_id']      = t_info['target-state']
-        transition['actbox_name']       = t_info['title']
+        transition['new_state_id']      = t_info.get('target-state', '')
+        transition['actbox_name']       = t_info.get('title', '')
         transition['title']             = t_info.get('description', '') # yes, this is right
         transition['description']       = t_info.get('details', '')
         transition['trigger_type']      = t_info.get('trigger', 'User').upper()
@@ -181,7 +181,7 @@ class DefaultDeserializer(object):
         """
         
         s_info = self.get_map(reader)
-        scipt = copy.deepcopy(config.script_template)
+        script = copy.deepcopy(config.script_template)
         meta_type = script['meta_type'] = s_info.get('type')
 
         if meta_type == 'External Method':
