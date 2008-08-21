@@ -32,7 +32,7 @@ class DefaultSerializer(object):
         writer = csv.writer(output_stream)
     
         r = writer.writerow
-    
+        
         r(['[Workflow]'])
         r(['Id:',            info['id']                  ])
         r(['Title:',         info['title'].strip()       ])
@@ -83,12 +83,34 @@ class DefaultSerializer(object):
             r(['Id:',               t['id']                             ])
             r(['Target state:',     t['new_state_id']                   ])
             r(['Title:',            t['actbox_name']                    ])
+            r(['URL:',              t['actbox_url']                     ])
             r(['Description:',      t['title'].strip()                  ])
             r(['Details:',          t['description'].strip()            ])
             r(['Trigger:',          t['trigger_type'].capitalize()      ])
-        
+            
             r(['Guard permission:', ', '.join(t['guard_permissions'])   ])
             r(['Guard role:',       ', '.join(t['guard_roles'])         ])
             r(['Guard expression:', t['guard_expr']                     ])
+            
+            r(['Script before:',    t['script_name']                    ])
+            r(['Script after:',     t['after_script_name']              ])
+            
+            r([]) # terminator row
+
+        for s in info['script_info']:
+            if s['meta_type'] == 'External Method':
+                r(['[Script]'])
+                
+                r(['Id:',       s['id']        ])
+                r(['Type:',     s['meta_type'] ])
+                r(['Module:',   s['module']    ])
+                r(['Function:', s['function']  ])
+                
+            ## elif s['meta_type'] == 'Script (Python)':
+            ##     r(['[Script]'])
+                
+            ##     r(['Id:',       s['id']        ])
+            ##     r(['Type:',     s['meta_type'] ])
+            ##     r(['File:',     s['filename']  ])
 
             r([]) # terminator row

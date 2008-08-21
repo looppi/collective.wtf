@@ -22,7 +22,8 @@ class DefaultDeserializer(object):
     def __init__(self):
         self.handlers = dict(workflow=self.parse_workflow,
                              state=self.parse_state,
-                             transition=self.parse_transition)
+                             transition=self.parse_transition,
+                             script=self.parse_script)
 
     def __call__(self, input_stream, config_variant=u""):
 
@@ -166,12 +167,46 @@ class DefaultDeserializer(object):
         transition['title']             = t_info.get('description', '') # yes, this is right
         transition['description']       = t_info.get('details', '')
         transition['trigger_type']      = t_info.get('trigger', 'User').upper()
-        transition['actbox_url']        = "%(content_url)s/content_status_modify?workflow_action=" + t_info['id']
+        transition['actbox_url']        = t_info.get('url', '') # since plone 3 this can be customised
         transition['guard_roles']       = self.get_list(t_info.get('guard-role', t_info.get('guard-roles', '')))
         transition['guard_permisisons'] = self.get_list(t_info.get('guard-permission', t_info.get('guard-permissions', '')))
         transition['guard_expr']        = t_info.get('guard-expression', '')
+        transition['script_name']       = t_info.get('script-before', '')
+        transition['after_script_name'] = t_info.get('script-after', '')
         
         info['transition_info'].append(transition)
+
+    def parse_script(self, config, info, reader):
+        """Parse a [Script] section
+        """
+        
+        s_info = self.get_map(reader)
+        scipt = copy.deepcopy(config.script_template)
+        meta_type = script['meta_type'] = s_info.get('type')
+
+        if meta_type == 'External Method':
+            required = ['id', 'module', 'function']
+            missing = [m for m in required if m not in s_info]
+            if missing:
+                raise ParsingError("Each [Script] section with 'Type: External Method' must have an 'Id:', a 'Module:', and a 'Function:' defined")
+
+            script['id']       = s_info['id']
+            script['module']   = s_info['module']
+            script['function'] = s_info['function']
+            
+        ## elif meta_type == 'Script (Python)':
+        ##     required = ['id', 'file']
+        ##     missing = [m for m in required if m not in s_info]
+        ##     if missing:
+        ##         raise ParsingError("Each [Script] section with 'Type: Script (Python)' must have an 'Id:', and a 'File:' defined")
+
+        ##     script['id']       = s_info['id']
+        ##     script['filename'] = s_info['file']
+            
+        else:
+            raise ParsingError("[Script] section unsupported type")
+        
+        info['script_info'].append(script)
         
     # integrity methods
 

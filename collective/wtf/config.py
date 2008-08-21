@@ -121,3 +121,10 @@ class DefaultConfig(object):
                          'guard_permissions': (),
                          'guard_roles': (),
                          'var_match': [('review_state', '')]}
+
+    script_template = {'id': '',
+                       'meta_type': '',
+                       'module': '',
+                       'function': '',
+                       'filename': ''}
+                       
