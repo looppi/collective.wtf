@@ -8,7 +8,7 @@ Initial state:,state_one
 Id:,state_one
 Title:,State one
 Description:,Description of state one
-Transitions:,to_state_two,to_state_three
+Transitions:,"to_state_two,to_state_three"
 Worklist:,State one worklist
 Worklist label:,Worklist stuff goes here
 Worklist guard permission:,Review portal content
