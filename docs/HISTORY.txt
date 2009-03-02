@@ -1,6 +1,26 @@
 Changelog
 =========
 
+1.0b5
+-----
+
+* Added utility methods to trigger automatic transitions on self and on
+  the parent, borrowed from Products.ReactiveWorkflow, but made to be useable
+  directly from a script rather than only in an event handler.
+  [optilude]
+
+* Improve documentation
+  [optilude]
+
+* Add inline script support
+  [optilude]
+
+1.0b4
+-----
+
+* Add script support
+  [elro]
+
 1.0b2
 -----
 

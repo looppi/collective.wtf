@@ -103,6 +103,7 @@ class DefaultDeserializer(object):
         # Set basic properties
         state['id']          = s_info['id']
         state['title']       = s_info['title']
+        state['description'] = s_info.get('description', '')
         state['transitions'] = self.get_list(s_info.get('transitions', ''))
 
         # Populate permission/role mappings
@@ -171,10 +172,32 @@ class DefaultDeserializer(object):
         transition['guard_roles']       = self.get_list(t_info.get('guard-role', t_info.get('guard-roles', '')))
         transition['guard_permissions'] = self.get_list(t_info.get('guard-permission', t_info.get('guard-permissions', '')))
         transition['guard_expr']        = t_info.get('guard-expression', '')
-        transition['script_name']       = t_info.get('script-before', '')
-        transition['after_script_name'] = t_info.get('script-after', '')
+        transition['script_name']       = script_name = t_info.get('script-before', '')
+        transition['after_script_name'] = after_script_name = t_info.get('script-after', '')
+        
+        # Create ExternalMethod scripts on the fly if given a module path
+        if '.Extensions.' in script_name:
+            transition['script_name'] = self.create_implicit_script(config, info, script_name)
+        if '.Extensions.' in after_script_name:
+            transition['after_script_name'] = self.create_implicit_script(config, info, after_script_name)
         
         info['transition_info'].append(transition)
+
+    def create_implicit_script(self, config, info, script_name):
+        external_method_path = script_name.replace('.Extensions', '')
+        external_method_path_parts = external_method_path.split('.')
+        
+        script = copy.deepcopy(config.script_template)
+        
+        script['meta_type'] = 'External Method'
+        script['id']        = '.'.join(external_method_path_parts[-2:])
+        script['module']    = '.'.join(external_method_path_parts[:-1])
+        script['function']  = external_method_path_parts[-1]
+        
+        info['script_info'].append(script)
+        
+        return script['id']
+        
 
     def parse_script(self, config, info, reader):
         """Parse a [Script] section

@@ -81,19 +81,33 @@ class DefaultSerializer(object):
             r(['[Transition]'])
         
             r(['Id:',               t['id']                             ])
-            r(['Target state:',     t['new_state_id']                   ])
             r(['Title:',            t['actbox_name']                    ])
-            r(['URL:',              t['actbox_url']                     ])
             r(['Description:',      t['title'].strip()                  ])
-            r(['Details:',          t['description'].strip()            ])
+            
+            if(t['description'].strip()):
+                r(['Details:',          t['description'].strip()        ])
+            
+            r(['Target state:',     t['new_state_id']                   ])
+            
+            if(t['actbox_url']):
+                r(['URL:',              t['actbox_url']                 ])
+            
             r(['Trigger:',          t['trigger_type'].capitalize()      ])
             
-            r(['Guard permission:', ', '.join(t['guard_permissions'])   ])
-            r(['Guard role:',       ', '.join(t['guard_roles'])         ])
-            r(['Guard expression:', t['guard_expr']                     ])
+            if(t['guard_permissions']):
+                r(['Guard permission:', ', '.join(t['guard_permissions'])])
+                
+            if(t['guard_roles']):
+                r(['Guard role:',       ', '.join(t['guard_roles'])     ])
+                
+            if(t['guard_expr']):
+                r(['Guard expression:', t['guard_expr']                 ])
             
-            r(['Script before:',    t['script_name']                    ])
-            r(['Script after:',     t['after_script_name']              ])
+            if(t['script_name']):
+                r(['Script before:',    t['script_name']                ])
+                
+            if(t['after_script_name']):
+                r(['Script after:',     t['after_script_name']          ])
             
             r([]) # terminator row
 

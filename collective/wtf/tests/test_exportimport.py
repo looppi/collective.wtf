@@ -4,8 +4,6 @@ import difflib
 
 from zope.component import getMultiAdapter
 
-from zope.component import getSiteManager
-
 from Products.Five import zcml
 from Products.Five import fiveconfigure
 
@@ -16,6 +14,8 @@ from Products.PloneTestCase.PloneTestCase import PloneTestCase
 from Products.PloneTestCase.PloneTestCase import setupPloneSite
 from Products.PloneTestCase.layer import PloneSite
 from Testing import ZopeTestCase
+
+from collective.wtf.tests.test_parsing import plone_workflow_csv
 
 setupPloneSite()
 
@@ -81,151 +81,118 @@ class TestGenericSetup(PloneTestCase):
         self.failUnless('test_wf' in self.portal.portal_workflow.objectIds())
         self.assertEquals('State one', self.portal.portal_workflow.test_wf.states.state_one.title)
         self.assertEquals('Make it state two', self.portal.portal_workflow.test_wf.transitions.to_state_two.actbox_name)
+        
+        self.failUnless('shared_script' in self.portal.portal_workflow.test_wf.scripts.objectIds())
+        self.failUnless('test_scripts.inline_test_one' in self.portal.portal_workflow.test_wf.scripts.objectIds())
+        self.failUnless('test_scripts.inline_test_two' in self.portal.portal_workflow.test_wf.scripts.objectIds())
     
-    def test_export(self):
+    def test_export_standard(self):
         wf = self.portal.portal_workflow.plone_workflow
+        context = TarballExportContext(self.portal.portal_setup)
+        handler = getMultiAdapter((wf, context), IBody, name=u'collective.wtf')
+        
+        expected = plone_workflow_csv
+
+        body = handler.body
+        
+        diff = '\n'.join(list(difflib.unified_diff(body.strip().splitlines(), expected.strip().splitlines())))
+                                         
+        self.failIf(diff, diff)
+
+    def test_export_imported(self):
+        wf = self.portal.portal_workflow.test_wf
         context = TarballExportContext(self.portal.portal_setup)
         handler = getMultiAdapter((wf, context), IBody, name=u'collective.wtf')
         
         expected = """\
 [Workflow]
-Id:,plone_workflow
-Title:,Community Workflow
-Description:,"- Users can create content that is immediately publicly accessible. - Content can be submitted for publication by the content's creator or a Manager, which is typically done to promote events or news to the front page. - Reviewers can publish or reject content, content owners can retract their submissions. - While the content is awaiting review it is readable by anybody. - If content is published, it can only be retracted by a Manager."
-Initial state:,visible
+Id:,test_wf
+Title:,Test workflow
+Description:,Description of workflow
+Initial state:,state_one
 
 [State]
-Id:,pending
-Title:,Pending review
-Description:,"Waiting to be reviewed, not editable by the owner."
-Transitions,"hide, publish, reject, retract"
-Worklist:,Reviewer tasks
-Worklist label:,Pending (%(count)d)
+Id:,state_one
+Title:,State one
+Description:,Description of state one
+Transitions,"to_state_two, to_state_three"
+Worklist:,State one worklist
+Worklist label:,Worklist stuff goes here
 Worklist guard permission:,Review portal content
-Worklist guard role:,
-Worklist guard expression:,
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
-Access contents information,N,Y,N,N,N,N,N,N
-View,N,Y,N,N,N,N,N,N
-Modify portal content,N,N,Y,N,N,N,N,Y
-Change portal events,N,N,Y,N,N,N,N,Y
-
-[State]
-Id:,private
-Title:,Private
-Description:,Can only be seen and edited by the owner.
-Transitions,show
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
-Access contents information,N,N,Y,Y,Y,Y,Y,N
-View,N,N,Y,Y,Y,Y,Y,N
-Modify portal content,N,N,Y,Y,N,Y,N,N
-Change portal events,N,N,Y,Y,N,Y,N,N
-
-[State]
-Id:,published
-Title:,Published
-Description:,"Visible to everyone, not editable by the owner."
-Transitions,"reject, retract"
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
-Access contents information,N,Y,N,N,N,N,N,N
-View,N,Y,N,N,N,N,N,N
+Worklist guard role:,Manager
+Worklist guard expression:,python:True==True
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Member
+Access contents information,Y,N,Y,Y,N,N,N,N
+View,Y,N,Y,Y,N,N,N,Y
 Modify portal content,N,N,Y,N,N,N,N,N
-Change portal events,N,N,Y,N,N,N,N,N
 
 [State]
-Id:,visible
-Title:,Public draft
-Description:,"Visible to everyone, but not approved by the reviewers."
-Transitions,"hide, publish, submit"
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
-Access contents information,N,Y,N,N,N,N,N,N
-View,N,Y,N,N,N,N,N,N
-Modify portal content,N,N,Y,Y,N,Y,N,N
-Change portal events,N,N,Y,Y,N,Y,N,N
+Id:,state_three
+Title:,State three
+Description:,Description of state three
+Transitions,to_state_one
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Member
+Access contents information,N,N,Y,Y,N,N,N,N
+View,N,N,Y,Y,N,N,N,N
+Modify portal content,N,N,N,N,N,N,N,N
+
+[State]
+Id:,state_two
+Title:,State two
+Description:,Description of state two
+Transitions,to_state_three
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Member
+Access contents information,Y,N,Y,Y,N,N,N,N
+View,Y,N,Y,Y,N,N,N,N
+Modify portal content,N,N,Y,N,N,N,N,N
 
 [Transition]
-Id:,hide
-Target state:,private
-Title:,Make private
-URL:,%(content_url)s/content_status_modify?workflow_action=hide
-Description:,Member makes content private
-Details:,Making an item private means that it will not be visible to anyone but the owner and the site administrator.
+Id:,to_state_one
+Title:,Make it state one
+Description:,Make it go to state one
+Target state:,state_one
+URL:,%(portal_url)s/change_to_state_one
 Trigger:,User
 Guard permission:,Modify portal content
-Guard role:,
-Guard expression:,
-Script before:,
-Script after:,
+Guard role:,Manager
+Guard expression:,python:True==True
+Script before:,shared_script
+Script after:,test_scripts.inline_test_one
 
 [Transition]
-Id:,publish
-Target state:,published
-Title:,Publish
-URL:,%(content_url)s/content_status_modify?workflow_action=publish
-Description:,Reviewer publishes content
-Details:,Publishing the item makes it visible to other users.
+Id:,to_state_three
+Title:,Make it state three
+Description:,Make it go to state one
+Target state:,state_three
 Trigger:,User
-Guard permission:,Review portal content
-Guard role:,
-Guard expression:,
-Script before:,
-Script after:,
 
 [Transition]
-Id:,reject
-Target state:,visible
-Title:,Send back
-URL:,%(content_url)s/content_status_modify?workflow_action=reject
-Description:,Reviewer sends content back for re-drafting
-Details:,Sending the item back will return the item to the original author instead of publishing it. You should preferably include a reason for why it was not published.
-Trigger:,User
-Guard permission:,Review portal content
-Guard role:,
-Guard expression:,
-Script before:,
-Script after:,
-
-[Transition]
-Id:,retract
-Target state:,visible
-Title:,Retract
-URL:,%(content_url)s/content_status_modify?workflow_action=retract
-Description:,Member retracts submission
-Details:,"If you submitted the item by mistake or want to perform additional edits, this will take it back."
-Trigger:,User
-Guard permission:,Request review
-Guard role:,
-Guard expression:,
-Script before:,
-Script after:,
-
-[Transition]
-Id:,show
-Target state:,visible
-Title:,Promote to Draft
-URL:,%(content_url)s/content_status_modify?workflow_action=show
-Description:,Member promotes content to public draft
-Details:,Promotes your private item to a public draft.
+Id:,to_state_two
+Title:,Make it state two
+Description:,Make it go to state one
+Target state:,state_two
 Trigger:,User
 Guard permission:,Modify portal content
-Guard role:,
-Guard expression:,
-Script before:,
-Script after:,
+Script before:,test_scripts.inline_test_two
 
-[Transition]
-Id:,submit
-Target state:,pending
-Title:,Submit for publication
-URL:,%(content_url)s/content_status_modify?workflow_action=submit
-Description:,Member submits content for publication
-Details:,"Puts your item in a review queue, so it can be published on the site."
-Trigger:,User
-Guard permission:,Request review
-Guard role:,
-Guard expression:,
-Script before:,
-Script after:,
+[Script]
+Id:,shared_script
+Type:,External Method
+Module:,collective.wtf.test_scripts
+Function:,script_section_test
+
+[Script]
+Id:,test_scripts.inline_test_one
+Type:,External Method
+Module:,collective.wtf.test_scripts
+Function:,inline_test_one
+
+[Script]
+Id:,test_scripts.inline_test_two
+Type:,External Method
+Module:,collective.wtf.test_scripts
+Function:,inline_test_two
+
 """
 
         body = handler.body

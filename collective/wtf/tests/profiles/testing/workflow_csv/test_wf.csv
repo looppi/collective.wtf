@@ -15,7 +15,7 @@ Worklist guard permission:,Review portal content
 Worklist guard expression:,python:True==True
 Worklist guard role:,Manager
 Permissions,                  Acquire,  Manager, Member, Owner
-View,                         Y,        Y,       N,      Y
+View,                         Y,        Y,       Y,      Y
 Access contents information,  Y,        Y,       N,      Y
 Modify portal content,        N,        Y,       N,      N
 
@@ -41,23 +41,33 @@ Modify portal content,        N,        N,       N,      N
 
 [Transition]
 Id:,to_state_one
-Target state:,state_one
 Title:,Make it state one
-Trigger:,User
 Description:,Make it go to state one
+Target state:,state_one
+Trigger:,User
+URL:,%(portal_url)s/change_to_state_one
 Guard permission:,Modify portal content,View
 Guard expression:,python:True==True
 Guard role:,Manager
+Script before:,shared_script
+Script after:,collective.wtf.Extensions.test_scripts.inline_test_one
 
 [Transition]
 Id:,to_state_two
-Target state:,state_two
 Title:,Make it state two
+Target state:,state_two
 Description:,Make it go to state one
 Guard permission:,Modify portal content,View
+Script before:,collective.wtf.Extensions.test_scripts.inline_test_two
 
 [Transition]
 Id:,to_state_three
-Target state:,state_three
 Title:,Make it state three
+Target state:,state_three
 Description:,Make it go to state one
+
+[Script]
+Id:,shared_script
+Type:,External Method
+Module:, collective.wtf.test_scripts
+Function:,script_section_test
