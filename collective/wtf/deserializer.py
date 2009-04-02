@@ -79,6 +79,8 @@ class DefaultDeserializer(object):
         info['title']         = wf_info.get('title', '')
         info['description']   = wf_info.get('description', '')
         
+        info['meta_type']     = wf_info.get('type', 'Workflow')
+        
     def parse_state(self, config, info, reader):
         """Parse a [State] section
         """

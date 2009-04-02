@@ -14,7 +14,6 @@ from Products.GenericSetup.utils import BodyAdapterBase
 from Products.DCWorkflow.interfaces import IDCWorkflowDefinition
 from Products.DCWorkflow.exportimport import WorkflowDefinitionConfigurator
 from Products.DCWorkflow.exportimport import _initDCWorkflow
-from Products.DCWorkflow.DCWorkflow import DCWorkflowDefinition
 
 from zope.component import adapts
 
@@ -44,7 +43,19 @@ class CSVWorkflowDefinitionConfigurator(WorkflowDefinitionConfigurator):
         if self.info is not None:
             return self.info
         else:
-            return super(CSVWorkflowDefinitionConfigurator, self).getWorkflowInfo(workflow_id)
+            
+            workflow = self._obj
+            workflow_info = {
+                    'id'          : workflow_id, 
+                    'meta_type'   : workflow.meta_type,
+                    'title'       : workflow.title_or_id(),
+                    'description' : workflow.description
+                }
+
+            if IDCWorkflowDefinition.providedBy(workflow):
+                self._extractDCWorkflowInfo(workflow, workflow_info)
+
+            return workflow_info
 
 InitializeClass(CSVWorkflowDefinitionConfigurator)
 
@@ -79,16 +90,20 @@ class DCWorkflowDefinitionBodyAdapter(BodyAdapterBase):
         """
         
         logger = self.environ.getLogger('workflow-csv')
-        input_stream = StringIO(body)
-        deserializer = getUtility(ICSVWorkflowDeserializer)
         
-        info = {}
+        if isinstance(body, dict):
+            info = body
+        else:
+            input_stream = StringIO(body)
+            deserializer = getUtility(ICSVWorkflowDeserializer)
         
-        try:
-            info = deserializer(input_stream)
-        except ParsingError, p:
-            logger.error("Error parsing %s: %s" % (self.filename, str(p)))
-            raise p
+            info = {}
+        
+            try:
+                info = deserializer(input_stream)
+            except ParsingError, p:
+                logger.error("Error parsing %s: %s" % (self.filename, str(p)))
+                raise p
         
         # cheat :)
         
@@ -146,7 +161,7 @@ def importCSVWorkflow(context):
     xml_dir = context.listDirectory('workflows')
     if not xml_dir:
         xml_dir = set()
-
+    
     for csv_filename in csv_dir:
         
         if not csv_filename.endswith('.csv'):
@@ -159,6 +174,23 @@ def importCSVWorkflow(context):
             logger.warn('Skipping CSV workflow definition in %s since %s exists.' % (csv_filename, xml_filename))
             continue
         
+        filename = os.path.join("workflow_csv", csv_filename)
+        body = context.readDataFile(filename)
+        
+        if body is None:
+            return
+        
+        input_stream = StringIO(body)
+        deserializer = getUtility(ICSVWorkflowDeserializer)
+        
+        info = {}
+        
+        try:
+            info = deserializer(input_stream)
+        except ParsingError, p:
+            logger.error("Error parsing %s: %s" % (filename, str(p)))
+            raise p
+        
         wf = None
         
         if wf_name in portal_workflow.objectIds():
@@ -166,16 +198,18 @@ def importCSVWorkflow(context):
             wf = portal_workflow[wf_name]
         else:
             logger.info('Creating workflow definition %s using standard workflows.' % wf_name)
-            portal_workflow._setObject(wf_name, DCWorkflowDefinition(wf_name))
+            wf_name = info['id']
+            meta_type = info.get('meta_type', 'Workflow')
+            for mt_info in Products.meta_types:
+                if mt_info['name'] == meta_type:
+                    portal_workflow._setObject(wf_name, mt_info['instance'](wf_name))
+                    break
+            
             wf = portal_workflow[wf_name]
         
-        filename = os.path.join("workflow_csv", csv_filename)
         importer = queryMultiAdapter((wf, context), IBody, name=u'collective.wtf')
-        
-        body = context.readDataFile(filename)
-        if body is not None:
-            importer.filename = filename # for error reporting
-            importer.body = body
+        importer.filename = filename # for error reporting
+        importer.body = info
 
 def exportCSVWorkflow(context):
     """Export portlet managers and portlets

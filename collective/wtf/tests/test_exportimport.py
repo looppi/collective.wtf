@@ -110,6 +110,7 @@ Id:,test_wf
 Title:,Test workflow
 Description:,Description of workflow
 Initial state:,state_one
+Type:,Workflow
 
 [State]
 Id:,state_one

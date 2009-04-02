@@ -348,6 +348,7 @@ Id:,plone_workflow
 Title:,Community Workflow
 Description:,"- Users can create content that is immediately publicly accessible. - Content can be submitted for publication by the content's creator or a Manager, which is typically done to promote events or news to the front page. - Reviewers can publish or reject content, content owners can retract their submissions. - While the content is awaiting review it is readable by anybody. - If content is published, it can only be retracted by a Manager."
 Initial state:,visible
+Type:,Workflow
 
 [State]
 Id:,pending

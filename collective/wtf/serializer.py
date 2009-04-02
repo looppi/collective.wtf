@@ -38,6 +38,7 @@ class DefaultSerializer(object):
         r(['Title:',         info['title'].strip()       ])
         r(['Description:',   info['description'].strip() ])
         r(['Initial state:', info['initial_state']       ])
+        r(['Type:',          info['meta_type']           ])
         r([]) # terminator row
     
         for s in info['state_info']:
