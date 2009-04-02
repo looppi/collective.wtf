@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0b6'
+version = '1.0b7'
 
 setup(name='collective.wtf',
       version=version,
@@ -25,9 +25,16 @@ setup(name='collective.wtf',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
+          'zope.interface',
+          'zope.component',
+          'Products.CMFCore',
+          'Products.DCWorkflow',
+          'Products.GenericSetup',
+          'plone.memoize',
+          
       ],
       entry_points="""
-      # -*- Entry points: -*-
+      [z3c.autoinclude.plugin]
+      target = plone
       """,
       )
