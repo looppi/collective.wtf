@@ -34,11 +34,12 @@ class DefaultSerializer(object):
         r = writer.writerow
         
         r(['[Workflow]'])
-        r(['Id:',            info['id']                  ])
-        r(['Title:',         info['title'].strip()       ])
-        r(['Description:',   info['description'].strip() ])
-        r(['Initial state:', info['initial_state']       ])
-        r(['Type:',          info['meta_type']           ])
+        r(['Id:',             info['id']                  ])
+        r(['Title:',          info['title'].strip()       ])
+        r(['Description:',    info['description'].strip() ])
+        r(['Initial state:',  info['initial_state']       ])
+        r(['Type:',           info['meta_type']           ])
+        r(['State variable:', info['state_variable']      ])
         r([]) # terminator row
     
         for s in info['state_info']:

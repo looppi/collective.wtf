@@ -111,6 +111,7 @@ Title:,Test workflow
 Description:,Description of workflow
 Initial state:,state_one
 Type:,Workflow
+State variable:,defaults_to_review_state_but_here_is_another_one
 
 [State]
 Id:,state_one

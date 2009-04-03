@@ -1,11 +1,19 @@
 Changelog
 =========
 
+1.0b6
+-----
+
+* Add support for setting the state variable, with the 'State variable' option
+  to the main workflow section.
+  [optilude]
+
 1.0b5
 -----
 
 * Now imports/exports meta_type, in order to support workflows defined with
-  collective.reactiveworkflow.
+  collective.reactiveworkflow.  This uses the option 'Type' in the main
+  workflow section.
   [optildue]
 
 1.0b5
