@@ -120,6 +120,17 @@ about the workflow as a whole, with the following keys. Keys marked with a
   Title -- A human-friendly title for the workflow.
   
   Description -- A human-friendly description for the workflow.
+  
+  Type -- The meta_type of the workflow. Defaults to 'Workflow', which is the
+    standard DCWorkflow definition type. Note that if you have a custom
+    workflow, there is no guarantee that collective.wtf will be able to parse
+    it, so be careful.
+  
+  State variable -- The workflow variable that holds the current state. For
+    the primary workflow of a Plone content object, this should be
+    'review_state', which is the default. However, if you are designing a
+    secondary workflow in a multi-workflow chain, it may need a different
+    state variable.
 
 For example::
 
