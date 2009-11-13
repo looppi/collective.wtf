@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.0b7
+-----
+
+* Add CMF 2.2 / Plone 4 support. Note that the new workflow options (like
+  "manager bypass" and "creation guard") are not (yet) supported.
+  [optilude]
+
 1.0b6
 -----
 

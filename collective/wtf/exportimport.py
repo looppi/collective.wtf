@@ -111,32 +111,64 @@ class DCWorkflowDefinitionBodyAdapter(BodyAdapterBase):
         wfdc = CSVWorkflowDefinitionConfigurator(self.context, info=info)
         xml_body = wfdc.__of__(self.context).generateWorkflowXML()
         
-        ( workflow_id
-        , title
-        , state_variable
-        , initial_state
-        , states
-        , transitions
-        , variables
-        , worklists
-        , permissions
-        , scripts
-        , description
-        ) = wfdc.parseWorkflowXML(xml_body, encoding)
+        try: # CMF 2.1 / Plone 3
+            ( workflow_id
+            , title
+            , state_variable
+            , initial_state
+            , states
+            , transitions
+            , variables
+            , worklists
+            , permissions
+            , scripts
+            , description
+            ) = wfdc.parseWorkflowXML(xml_body, encoding)
         
-        _initDCWorkflow( self.context
-                       , title
-                       , description
-                       , state_variable
-                       , initial_state
-                       , states
-                       , transitions
-                       , variables
-                       , worklists
-                       , permissions
-                       , scripts
-                       , self.environ
-                       )
+            _initDCWorkflow( self.context
+                           , title
+                           , description
+                           , state_variable
+                           , initial_state
+                           , states
+                           , transitions
+                           , variables
+                           , worklists
+                           , permissions
+                           , scripts
+                           , self.environ
+                           )
+        except (ValueError, TypeError,): # CMF 2.2 / Plone 4
+            ( workflow_id
+            , title
+            , state_variable
+            , initial_state
+            , states
+            , transitions
+            , variables
+            , worklists
+            , permissions
+            , scripts
+            , description
+            , manager_bypass
+            , creation_guard
+            ) = wfdc.parseWorkflowXML(xml_body, encoding)
+            
+            _initDCWorkflow( self.context
+                           , title
+                           , description
+                           , manager_bypass
+                           , creation_guard
+                           , state_variable
+                           , initial_state
+                           , states
+                           , transitions
+                           , variables
+                           , worklists
+                           , permissions
+                           , scripts
+                           , self.environ
+                           )
 
     body = property(_exportBody, _importBody)
 
