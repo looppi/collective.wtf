@@ -255,9 +255,6 @@ def exportCSVWorkflow(context):
     for wf in portal_workflow.objectValues():
         exporter = queryMultiAdapter((wf, context), IBody, name=u'collective.wtf')
         
-        if not os.path.exists('workflow_csv'):
-            os.mkdir('workflow_csv')
-        
         filename = os.path.join("workflow_csv", "%s.csv" % wf.getId())
         body = exporter.body
         if body is not None:
