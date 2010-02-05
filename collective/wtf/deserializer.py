@@ -28,7 +28,9 @@ class DefaultDeserializer(object):
     def __call__(self, input_stream, config_variant=u""):
 
         config = getUtility(ICSVWorkflowConfig, name=config_variant)
-        reader = csv.reader(input_stream)
+        dialect = csv.Sniffer().sniff(input_stream.read(1024))
+        input_stream.seek(0)
+        reader = csv.reader(input_stream, dialect)
     
         info = copy.deepcopy(config.info_template)
         

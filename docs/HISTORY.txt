@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.0b9
+-----
+
+* Don't make assumptions about the csv dialect on import. Instead, sniff the
+  first 1024 bytes.
+  [mj]
+
 1.0b8
 -----
 
