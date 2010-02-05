@@ -28,7 +28,11 @@ class DefaultDeserializer(object):
     def __call__(self, input_stream, config_variant=u""):
 
         config = getUtility(ICSVWorkflowConfig, name=config_variant)
-        dialect = csv.Sniffer().sniff(input_stream.read(1024))
+        
+        try:
+            dialect = csv.Sniffer().sniff(input_stream.read(1024))
+        except csv.Error:
+            dialect = csv.excel
         input_stream.seek(0)
         reader = csv.reader(input_stream, dialect)
     
