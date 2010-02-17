@@ -5,7 +5,10 @@ from zope.component import queryMultiAdapter
 from zope.component import getUtility
 
 from AccessControl import ClassSecurityInfo
-from Globals import InitializeClass
+try:
+    from App.class_init import InitializeClass
+except ImportError:
+    from Globals import InitializeClass
 
 from Products.GenericSetup.interfaces import IBody
 from Products.GenericSetup.interfaces import ISetupEnviron
