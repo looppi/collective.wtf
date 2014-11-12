@@ -123,30 +123,30 @@ Worklist label:,Worklist stuff goes here
 Worklist guard permission:,Review portal content
 Worklist guard role:,Manager
 Worklist guard expression:,python:True==True
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Member
-Access contents information,Y,N,Y,Y,N,N,N,N
-View,Y,N,Y,Y,N,N,N,Y
-Modify portal content,N,N,Y,N,N,N,N,N
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Site Administrator,Member
+Access contents information,Y,N,Y,Y,N,N,N,N,N
+View,Y,N,Y,Y,N,N,N,N,Y
+Modify portal content,N,N,Y,N,N,N,N,N,N
 
 [State]
 Id:,state_three
 Title:,State three
 Description:,Description of state three
 Transitions,to_state_one
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Member
-Access contents information,N,N,Y,Y,N,N,N,N
-View,N,N,Y,Y,N,N,N,N
-Modify portal content,N,N,N,N,N,N,N,N
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Site Administrator,Member
+Access contents information,N,N,Y,Y,N,N,N,N,N
+View,N,N,Y,Y,N,N,N,N,N
+Modify portal content,N,N,N,N,N,N,N,N,N
 
 [State]
 Id:,state_two
 Title:,State two
 Description:,Description of state two
 Transitions,to_state_three
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Member
-Access contents information,Y,N,Y,Y,N,N,N,N
-View,Y,N,Y,Y,N,N,N,N
-Modify portal content,N,N,Y,N,N,N,N,N
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Site Administrator,Member
+Access contents information,Y,N,Y,Y,N,N,N,N,N
+View,Y,N,Y,Y,N,N,N,N,N
+Modify portal content,N,N,Y,N,N,N,N,N,N
 
 [Transition]
 Id:,to_state_one

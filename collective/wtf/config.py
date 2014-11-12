@@ -5,7 +5,7 @@ from collective.wtf.interfaces import ICSVWorkflowConfig
 class DefaultConfig(object):
     implements(ICSVWorkflowConfig)
     
-    known_roles = ['Anonymous', 'Manager', 'Owner', 'Reader', 'Editor', 'Contributor']
+    known_roles = ['Anonymous', 'Manager', 'Owner', 'Reader', 'Editor', 'Contributor', 'Site Administrator']
     known_permissions = ['Access contents information', 'View', 'Modify portal content']
     
     # remember to call .copy() when using these!

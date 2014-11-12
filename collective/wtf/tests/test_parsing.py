@@ -66,7 +66,7 @@ class TestDeserializer(unittest.TestCase):
         self.assertEquals(sorted(('Anonymous',)), sorted(pending_state_permissions['View']['roles']))
         
         self.assertEquals(False, pending_state_permissions['Modify portal content']['acquired'])
-        self.assertEquals(sorted(('Manager', 'Reviewer')), sorted(pending_state_permissions['Modify portal content']['roles']))
+        self.assertEquals(sorted(('Manager', 'Reviewer', 'Site Administrator')), sorted(pending_state_permissions['Modify portal content']['roles']))
         
         # List of permissions (extracted as union of all managed permissions)
         self.assertEquals(sorted(['Access contents information', 'Change portal events', 'Modify portal content', 'View']),
@@ -105,10 +105,12 @@ plone_workflow_info = \
                                   'roles': ('Anonymous',)},
                                  {'acquired': False,
                                   'name': 'Change portal events',
-                                  'roles': ('Manager', 'Reviewer')},
+                                  'roles': ('Manager', 'Reviewer',
+                                            'Site Administrator')},
                                  {'acquired': False,
                                   'name': 'Modify portal content',
-                                  'roles': ('Manager', 'Reviewer')},
+                                  'roles': ('Manager', 'Reviewer',
+                                            'Site Administrator')},
                                  {'acquired': False,
                                   'name': 'View',
                                   'roles': ('Anonymous',)}],
@@ -124,20 +126,24 @@ plone_workflow_info = \
                                             'Owner',
                                             'Reader',
                                             'Editor',
-                                            'Contributor')},
+                                            'Contributor',
+                                            'Site Administrator')},
                                  {'acquired': False,
                                   'name': 'Change portal events',
-                                  'roles': ('Manager', 'Owner', 'Editor')},
+                                  'roles': ('Manager', 'Owner', 'Editor',
+                                            'Site Administrator')},
                                  {'acquired': False,
                                   'name': 'Modify portal content',
-                                  'roles': ('Manager', 'Owner', 'Editor')},
+                                  'roles': ('Manager', 'Owner', 'Editor',
+                                            'Site Administrator')},
                                  {'acquired': False,
                                   'name': 'View',
                                   'roles': ('Manager',
                                             'Owner',
                                             'Reader',
                                             'Editor',
-                                            'Contributor')}],
+                                            'Contributor',
+                                            'Site Administrator')}],
                  'title': 'Private',
                  'transitions': ('show',),
                  'variables': []},
@@ -149,10 +155,12 @@ plone_workflow_info = \
                                   'roles': ('Anonymous',)},
                                  {'acquired': False,
                                   'name': 'Change portal events',
-                                  'roles': ('Manager',)},
+                                  'roles': ('Manager',
+                                            'Site Administrator')},
                                  {'acquired': False,
                                   'name': 'Modify portal content',
-                                  'roles': ('Manager',)},
+                                  'roles': ('Manager',
+                                            'Site Administrator')},
                                  {'acquired': False,
                                   'name': 'View',
                                   'roles': ('Anonymous',)}],
@@ -167,10 +175,12 @@ plone_workflow_info = \
                                   'roles': ('Anonymous',)},
                                  {'acquired': False,
                                   'name': 'Change portal events',
-                                  'roles': ('Manager', 'Owner', 'Editor')},
+                                  'roles': ('Manager', 'Owner', 'Editor',
+                                            'Site Administrator')},
                                  {'acquired': False,
                                   'name': 'Modify portal content',
-                                  'roles': ('Manager', 'Owner', 'Editor')},
+                                  'roles': ('Manager', 'Owner', 'Editor',
+                                            'Site Administrator')},
                                  {'acquired': False,
                                   'name': 'View',
                                   'roles': ('Anonymous',)}],
@@ -361,44 +371,44 @@ Worklist label:,Pending (%(count)d)
 Worklist guard permission:,Review portal content
 Worklist guard role:,
 Worklist guard expression:,
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
-Access contents information,N,Y,N,N,N,N,N,N
-View,N,Y,N,N,N,N,N,N
-Modify portal content,N,N,Y,N,N,N,N,Y
-Change portal events,N,N,Y,N,N,N,N,Y
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Site Administrator,Reviewer
+Access contents information,N,Y,N,N,N,N,N,N,N
+View,N,Y,N,N,N,N,N,N,N
+Modify portal content,N,N,Y,N,N,N,N,Y,Y
+Change portal events,N,N,Y,N,N,N,N,Y,Y
 
 [State]
 Id:,private
 Title:,Private
 Description:,Can only be seen and edited by the owner.
 Transitions,show
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
-Access contents information,N,N,Y,Y,Y,Y,Y,N
-View,N,N,Y,Y,Y,Y,Y,N
-Modify portal content,N,N,Y,Y,N,Y,N,N
-Change portal events,N,N,Y,Y,N,Y,N,N
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Site Administrator,Reviewer
+Access contents information,N,N,Y,Y,Y,Y,Y,Y,N
+View,N,N,Y,Y,Y,Y,Y,Y,N
+Modify portal content,N,N,Y,Y,N,Y,N,Y,N
+Change portal events,N,N,Y,Y,N,Y,N,Y,N
 
 [State]
 Id:,published
 Title:,Published
 Description:,"Visible to everyone, not editable by the owner."
 Transitions,"reject, retract"
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
-Access contents information,N,Y,N,N,N,N,N,N
-View,N,Y,N,N,N,N,N,N
-Modify portal content,N,N,Y,N,N,N,N,N
-Change portal events,N,N,Y,N,N,N,N,N
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Site Administrator,Reviewer
+Access contents information,N,Y,N,N,N,N,N,N,N
+View,N,Y,N,N,N,N,N,N,N
+Modify portal content,N,N,Y,N,N,N,N,Y,N
+Change portal events,N,N,Y,N,N,N,N,Y,N
 
 [State]
 Id:,visible
 Title:,Public draft
 Description:,"Visible to everyone, but not approved by the reviewers."
 Transitions,"hide, publish, submit"
-Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Reviewer
-Access contents information,N,Y,N,N,N,N,N,N
-View,N,Y,N,N,N,N,N,N
-Modify portal content,N,N,Y,Y,N,Y,N,N
-Change portal events,N,N,Y,Y,N,Y,N,N
+Permissions,Acquire,Anonymous,Manager,Owner,Reader,Editor,Contributor,Site Administrator,Reviewer
+Access contents information,N,Y,N,N,N,N,N,N,N
+View,N,Y,N,N,N,N,N,N,N
+Modify portal content,N,N,Y,Y,N,Y,N,Y,N
+Change portal events,N,N,Y,Y,N,Y,N,Y,N
 
 [Transition]
 Id:,hide
