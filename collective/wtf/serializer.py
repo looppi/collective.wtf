@@ -95,7 +95,7 @@ class DefaultSerializer(object):
                 r(['URL:',              t['actbox_url']                 ])
             
             r(['Trigger:',          t['trigger_type'].capitalize()      ])
-            
+
             if(t['guard_permissions']):
                 r(['Guard permission:', ', '.join(t['guard_permissions'])])
                 
@@ -110,7 +110,10 @@ class DefaultSerializer(object):
                 
             if(t['after_script_name']):
                 r(['Script after:',     t['after_script_name']          ])
-            
+
+            if t['actbox_category'] != 'workflow':
+                r(['Category:', t['actbox_category']])
+
             r([]) # terminator row
 
         for s in info['script_info']:

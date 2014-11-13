@@ -61,6 +61,7 @@ Target state:,state_two
 Description:,Make it go to state one
 Guard permission:,Modify portal content,View
 Script before:,collective.wtf.Extensions.test_scripts.inline_test_two
+Category:,workflow_hidden
 
 [Transition]
 Id:,to_state_three

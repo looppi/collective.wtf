@@ -100,7 +100,7 @@ class DefaultConfig(object):
                            'title': '',
                            'description': '',
                            'new_state_id': '',
-                           'actbox_category': 'workflow',
+                           'actbox_category': '',
                            'actbox_name': '',
                            'actbox_url': '',
                            'actbox_icon': '',

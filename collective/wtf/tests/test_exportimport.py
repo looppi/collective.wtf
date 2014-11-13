@@ -176,6 +176,7 @@ Target state:,state_two
 Trigger:,User
 Guard permission:,Modify portal content
 Script before:,test_scripts.inline_test_two
+Category:,workflow_hidden
 
 [Script]
 Id:,shared_script

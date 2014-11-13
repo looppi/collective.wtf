@@ -184,7 +184,8 @@ class DefaultDeserializer(object):
         transition['guard_expr']        = t_info.get('guard-expression', '')
         transition['script_name']       = script_name = t_info.get('script-before', '')
         transition['after_script_name'] = after_script_name = t_info.get('script-after', '')
-        
+        transition['actbox_category']   = t_info.get('category', 'workflow')
+
         # Create ExternalMethod scripts on the fly if given a module path
         if '.Extensions.' in script_name:
             transition['script_name'] = self.create_implicit_script(config, info, script_name)
